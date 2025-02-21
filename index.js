@@ -19,9 +19,6 @@ trans.client = new Discord.Client({
     "CHANNEL"
   ]
 });
-trans.client.on('ready', () => {
-  console.log(trans.client.user.tag + " is alive!")
-})
 /* Run this to regiester the context commands (only once):
 trans.client.application.commands.create({
   name: 'translate',
@@ -36,7 +33,10 @@ trans.client.application.commands.create({
 // Main loop
 (async() => {
   // Login
-  await trans.client.login(process.env['token'])
+  await trans.client.login(process.env['token']);
+  trans.client.on('ready', () => {
+    console.log(trans.client.user.tag + " is alive!")
+  });
 
   // Listen to interactions (extra logic should be added if additional interactions exist)
   trans.client.on('interactionCreate', async (interaction) => {
@@ -45,7 +45,8 @@ trans.client.application.commands.create({
     s = await s.json();
     // Send
     await interaction.reply({
-      content: s.sentences[0].trans,
+      content: `${s.sentences[0].trans.replaceAll('\n','\n> ')}
+-# ⓘ Translated from ${new Intl.DisplayNames(['en'], {type: 'language'}).of(s.src)}`,
       ephemeral: (interaction.commandName === 'translate')
     })
   });
