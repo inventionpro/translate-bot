@@ -12,11 +12,12 @@ process.on('uncaughtException', function(err) {
 let trans = {};
 trans.client = new Discord.Client({
   intents: [
-    Object.values(Discord.Intents.FLAGS).reduce((acc, p) => acc | p, 0)
+    Discord.GatewayIntentBits.GuildMessages,
+    Discord.GatewayIntentBits.MessageContent
   ],
   partials: [
-    "REACTION",
-    "CHANNEL"
+    Discord.Partials.Channel,
+    Discord.Partials.Reaction
   ]
 });
 /* Run this to regiester the context commands (only once):
@@ -44,7 +45,7 @@ trans.client.application.commands.create({
     if (msgContent.length<1) {
       await interaction.reply({
         content: `Message does not have text`,
-        ephemeral: true
+        flags: Discord.MessageFlags.Ephemeral
       });
       return;
     }
@@ -55,7 +56,7 @@ trans.client.application.commands.create({
     await interaction.reply({
       content: `${s.text}
 -# ⓘ Translated from ${new Intl.DisplayNames(['en'], {type: 'language'}).of(s.source)}`,
-      ephemeral: (interaction.commandName === 'translate')
+      flags: (interaction.commandName === 'translate') ? Discord.MessageFlags.Ephemeral : 0
     });
   });
 })();
