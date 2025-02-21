@@ -26,7 +26,7 @@ trans.client.application.commands.create({
   type: 3
 })
 trans.client.application.commands.create({
-  name: 'translate for all',
+  name: 'translate for myself',
   type: 3
 })
 */
@@ -35,8 +35,8 @@ trans.client.application.commands.create({
 (async() => {
   // Login
   await trans.client.login(process.env['token']);
-  trans.client.on('ready', () => {
-    console.log(trans.client.user.tag + " is alive!")
+  trans.client.on('ready', async() => {
+    console.log(trans.client.user.tag + " is alive!");
   });
 
   // Listen to interactions (extra logic should be added if additional interactions exist)
@@ -56,7 +56,7 @@ trans.client.application.commands.create({
     await interaction.reply({
       content: `${s.text}
 -# ⓘ Translated from ${new Intl.DisplayNames(['en'], {type: 'language'}).of(s.source)}`,
-      flags: (interaction.commandName === 'translate') ? Discord.MessageFlags.Ephemeral : 0
+      flags: (interaction.commandName === 'translate') ? 0 : Discord.MessageFlags.Ephemeral
     });
   });
 })();
