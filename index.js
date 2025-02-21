@@ -41,12 +41,12 @@ trans.client.application.commands.create({
   // Listen to interactions (extra logic should be added if additional interactions exist)
   trans.client.on('interactionCreate', async (interaction) => {
     // Translate
-    let s = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&dj=1&source=input&q=' + encodeURIComponent(interaction.options.getMessage('message').content));
+    let s = await fetch('https://api.fsh.plus/translate?lang=en&text='+encodeURIComponent(interaction.options.getMessage('message').content));
     s = await s.json();
     // Send
     await interaction.reply({
-      content: `${s.sentences[0].trans.replaceAll('\n','\n> ')}
--# ⓘ Translated from ${new Intl.DisplayNames(['en'], {type: 'language'}).of(s.src)}`,
+      content: `${s.text}
+-# ⓘ Translated from ${new Intl.DisplayNames(['en'], {type: 'language'}).of(s.source)}`,
       ephemeral: (interaction.commandName === 'translate')
     })
   });
