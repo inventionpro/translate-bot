@@ -40,14 +40,22 @@ trans.client.application.commands.create({
 
   // Listen to interactions (extra logic should be added if additional interactions exist)
   trans.client.on('interactionCreate', async (interaction) => {
+    let msgContent = interaction.options.getMessage('message').content;
+    if (msgContent.length<1) {
+      await interaction.reply({
+        content: `Message does not have text`,
+        ephemeral: true
+      });
+      return;
+    }
     // Translate
-    let s = await fetch('https://api.fsh.plus/translate?lang=en&text='+encodeURIComponent(interaction.options.getMessage('message').content));
+    let s = await fetch('https://api.fsh.plus/translate?lang=en&text='+encodeURIComponent(msgContent));
     s = await s.json();
     // Send
     await interaction.reply({
       content: `${s.text}
 -# ⓘ Translated from ${new Intl.DisplayNames(['en'], {type: 'language'}).of(s.source)}`,
       ephemeral: (interaction.commandName === 'translate')
-    })
+    });
   });
 })();
