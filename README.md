@@ -1,5 +1,5 @@
 # Translate bot
-A minimal discord translate bot.
+A free discord translate bot.
 
 Use anywhere:
 - User installs

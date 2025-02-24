@@ -1,5 +1,7 @@
 // Deps
 const Discord = require("discord.js");
+let { translate } = require('@vitalets/google-translate-api');
+const { getAgent } = require('./agent.js');
 let process = require('process');
 process.env = { token: '' }; // Add token or use your preferd .env library
 
@@ -22,12 +24,16 @@ trans.client = new Discord.Client({
 });
 /* Run this to regiester the context commands (only once):
 trans.client.application.commands.create({
+  type: 3,
   name: 'translate',
-  type: 3
+  integration_types: [0, 1],
+  contexts: [0, 1, 2]
 })
 trans.client.application.commands.create({
+  type: 3,
   name: 'translate for myself',
-  type: 3
+  integration_types: [0, 1],
+  contexts: [0, 1, 2]
 })
 */
 
@@ -35,7 +41,7 @@ trans.client.application.commands.create({
 (async() => {
   // Login
   await trans.client.login(process.env['token']);
-  trans.client.on('ready', async() => {
+  trans.client.on('ready', () => {
     console.log(trans.client.user.tag + " is alive!");
   });
 
@@ -50,12 +56,15 @@ trans.client.application.commands.create({
       return;
     }
     // Translate
-    let s = await fetch('https://api.fsh.plus/translate?lang=en&text='+encodeURIComponent(msgContent));
-    s = await s.json();
+    let agent = await getAgent();
+    let translation = await translate(msgContent, {
+      to: 'en',
+      fetchOptions: { agent }
+    });
     // Send
     await interaction.reply({
-      content: `${s.text}
--# ⓘ Translated from ${new Intl.DisplayNames(['en'], {type: 'language'}).of(s.source)}`,
+      content: `${translation.text}
+-# ⓘ Translated from ${new Intl.DisplayNames(['en'], {type: 'language'}).of(translation.raw.src)}`,
       flags: (interaction.commandName === 'translate') ? 0 : Discord.MessageFlags.Ephemeral
     });
   });

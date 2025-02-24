@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "discord.js": "^14.18.0"
+    "@vitalets/google-translate-api": "^9.2.1",
+    "discord.js": "^14.18.0",
+    "socks-proxy-agent": "^8.0.5"
   }
 }
