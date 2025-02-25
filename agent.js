@@ -20,7 +20,6 @@ async function getAgent(n = 0) {
     proxyList = newlist;
   }
   let idx = Math.floor(Math.random() * proxyList.length);
-  console.log(proxyList)
 
   return new SocksProxyAgent(`socks5://${proxyList[idx].ip}:${proxyList[idx].port}`);
 }
