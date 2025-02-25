@@ -57,12 +57,22 @@ trans.client.application.commands.create({
     }
     // Translate
     let agent = await getAgent();
-    let translation = await translate(msgContent, {
-      to: 'en',
-      fetchOptions: { agent }
-    });
+    let translation;
+    try {
+      translation = await translate(msgContent, {
+        to: 'en',
+        fetchOptions: { agent }
+      });
+    } catch(err) {
+      console.log(err);
+      interaction.reply({
+        content: `Could not translate at this moment, try again later.`,
+        flags: Discord.MessageFlags.Ephemeral
+      });
+      return;
+    }
     // Send
-    await interaction.reply({
+    interaction.reply({
       content: `${translation.text}
 -# ⓘ Translated from ${new Intl.DisplayNames(['en'], {type: 'language'}).of(translation.raw.src)}`,
       flags: (interaction.commandName === 'translate') ? 0 : Discord.MessageFlags.Ephemeral
